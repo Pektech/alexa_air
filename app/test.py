@@ -25,4 +25,14 @@ response = {'status': 'success',
 
 
 
-def test_parse(response):
+def get_latlong(zip):
+    url = 'https://geocoder.api.here.com/6.2/geocode.json'
+    querystring = {'app_id': 'ChfIK9R0Q9S8QEO9oC6V',
+                   'app_code' : 'BI_N766MeUmLIgK3QYh93A', 'searchtext': zip,
+                   'locationattributes': 'none,mapView'}
+    feed = requests.request('GET', url, params=querystring)
+    return feed.json()
+
+
+test["Response"]['View'][0]['Result'][0]['Location']['DisplayPosition']
+{'Latitude': 43.10176, 'Longitude': -73.5828}

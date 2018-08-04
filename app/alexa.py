@@ -2,7 +2,7 @@ from app import ask
 from flask_ask import statement, question
 from flask_ask import session as ask_session, request as ask_request
 import requests
-from .weather import parse_weather
+from .weather import GetWeatherData
 
 @ask.launch
 def start_skill():
@@ -17,17 +17,12 @@ def start_skill():
 
 @ask.intent('CityAir')
 def city_air(city, state):
-    url = "http://api.airvisual.com/v2/city"
-    querystring = {'city': city, 'state': state, 'country': 'USA',
-                   "key": "YEa4b9c2pNdCTZpNp"}
-    response = requests.request("GET", url, params=querystring).json()
 
-    print(response)
-    data = parse_weather(response)
+    data = GetWeatherData(city, state)
     print(data)
 
-    return question ('Current weather conditions are '+ data['conditions'] +
-                     '. wind is blowing  ' + data['wind'] + 'with a spedd of '
-                     + data['wind_speed'] + "the temperature is " + data['temp']
-                     + ' with humidity ' + data['humidity'] + '. Air quality is '
-                     + data['aqius'])
+    return question('Current weather conditions are '+ data.conditions[1] +
+                     '. Wind is blowing  ' + data.wind_dir + ' with a speed of '
+                     + data.wind_speed + " miles per second. the temperature is " + data.temp
+                     + ' with humidity at' + data.humidity + '. Air quality index is '
+                     + data.aqi[0] + ' which is ' + data.aqi[2])
