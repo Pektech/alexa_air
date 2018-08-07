@@ -30,22 +30,6 @@ def get_coordinates(location):
     return (coordinates.latitude, coordinates.longitude)
 
 
-
-# def parse_weather(response):
-#     aqius = str(response['data']['current']['pollution']['aqius'])
-#     temp = str(response['data']['current']['weather']['tp'])
-#     humidity = str(response['data']['current']['weather']['hu'])
-#     wind_speed = str(response['data']['current']['weather']['ws'])
-#     wind = response['data']['current']['weather']['wd']
-#     conditions = response['data']['current']['weather']['ic']
-#     conditions = weather_status[conditions]
-#     wind = wind_direction(wind)
-#     return {'aqius': aqius, 'temp': temp, 'humidity': humidity,
-#             'wind_speed': wind_speed, 'wind': wind, 'conditions': conditions
-#             }
-
-
-
 class GetWeatherData():
     '''Get data from airvisual api, set up properties for needed variables'''
     def __init__(self, city, state):
@@ -119,10 +103,8 @@ class GetWeatherData():
             return (status, 'ok')
 
 
-
-
-
 class GetZipWeather(GetWeatherData):
+    '''subclass for zipcodes'''
     def __init__(self, zipcode):
         super().__init__(city=None, state=None)
         self.zipcode = zipcode

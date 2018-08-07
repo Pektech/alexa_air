@@ -10,9 +10,7 @@ from app import alexa
 def hello_world():
     return 'Hello World!'
 
-@app.route('/static/images/<path:filename>')
-def ret_image(filename):
-    return send_from_directory('static/images', filename,)
+
 
 
 
