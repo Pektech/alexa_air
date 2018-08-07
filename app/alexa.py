@@ -134,3 +134,37 @@ def zipweather(zip):
             text=textContent,
             image='https://737b52e8.ngrok.io/static/images/{}.png'
             .format(data.conditions[0]))
+
+
+@ask.intent('AMAZON.CancelIntent')
+@ask.intent('AMAZON.StopIntent')
+@ask.intent('AMAZON.NoIntent')
+def goodbye():
+    return statement('Good bye')
+
+@ask.intent('AMAZON.HelpIntent')
+def help():
+    return question('I can provide a weather report. Say location for here, '
+                    'a zipcode or tell me a city name and its State')
+
+@ask.intent('AMAZON.PreviousIntent')
+@ask.intent('AMAZON.NextIntent')
+def misc():
+    return question('That does not work with this app. Would you like an'
+                    'air status?')
+
+
+@ask.intent('AMAZON.YesIntent')
+def yes():
+    return question('Say location for here, '
+                    'a zipcode or tell me a city name and its State')
+
+@ask.intent('AMAZON.RepeatIntent')
+def repeat():
+    repeat_speech = ask_session.attributes['last_speech']
+    return question(repeat_speech)
+
+@ask.intent('AMAZON.FallbackIntent')
+def fallback():
+    return question('Sorry I only provide air status. Would you like one?')
+
