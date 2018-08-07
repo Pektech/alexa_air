@@ -3,7 +3,7 @@ from flask_ask import statement, question
 from flask_ask import session as ask_session, request as ask_request, context
 import requests
 from .weather import GetWeatherData, GetZipWeather, get_coordinates
-
+from flask import url_for
 from geopy.geocoders import Nominatim
 
 permissions = ["read::alexa:device:all:address:country_and_postal_code"]
@@ -31,6 +31,8 @@ def get_alexa_location(deviceId, accessToken):
 
 @ask.launch
 def start_skill():
+    test = url_for('hello_world')
+    print(test)
     welcome_message = 'Welcome would you like the air status & weather for ' \
                       'your location or for a specific city?'
     reprompt_text = 'Say home or the name of a city & State and I will tell you the ' \
@@ -44,14 +46,17 @@ def start_skill():
 
 
 @ask.intent('GetAddressIntent')
-def home():
+def here():
     deviceID = context.System.device['deviceId']
     accessToken = context.System['apiAccessToken']
     check_permission = get_alexa_location(deviceID, accessToken)
     if check_permission[0] == 'success':
         location = check_permission[1]['postalCode']
-        get_coordinates(location)
-        return statement(check_permission['postalCode'])
+
+        # print(type(location))
+        #return statement(check_permission[1]['postalCode'])
+        test=zipweather(location)
+        return test
     elif check_permission == 'error':
         return statement("I need your permission to access your zipcode."
                          " Please enable Location permissions in "
@@ -102,9 +107,9 @@ def city_air(city, state):
 
 
 
-@ask.intent('ZipAir')
+@ask.intent('ZipAir',)
 def zipweather(zip):
-    print(zip)
+    print(type(zip))
     data=GetZipWeather(zip)
     status = data.status
     print(status, data.info)
@@ -117,7 +122,7 @@ def zipweather(zip):
         else:
             return statement("I'm sorry the service is noy available at this time."
                          "Please try later. Good Bye")
-    print(data.info)
+    print('pek')
     forecast = 'Current weather conditions are ' + data.conditions[1] + \
                '. Wind is blowing  ' + data.wind_dir + ' with a speed of ' \
                + data.wind_speed + " miles per second. the temperature " \
