@@ -1,11 +1,11 @@
 # for parsing the weather/pollution report
 import requests
 
-weather_status = {'01d': 'It is Sunny', '01n': 'A Clear Night',
-                  '02d': 'A few light Clouds', '02n': 'Few Nighttime Clouds',
-                  '03d': 'Scattered Clouds', '04d': 'Over cast with Broken Clouds',
-                  '09d': 'Rain Showers', '10d': 'Rain', '10n': 'Rain',
-                  '11d': 'Thunder Storm', '13d': 'Snow', '50d':'Fog'}
+weather_status = {'01d': 'sunny', '01n': 'a clear night',
+                  '02d': 'a few light clouds', '02n': 'a few nighttime clouds',
+                  '03d': 'scattered clouds', '04d': 'over cast with broken clouds',
+                  '09d': 'rain showers', '10d': 'rain', '10n': 'rain',
+                  '11d': 'thunder storms', '13d': 'snow', '50d':'fog'}
 
 air_status = {'green': 'Good','yellow': 'Moderate',
                'orange': 'Unhealthy for Sensative Groups', 'red': 'unhealthy',
@@ -95,7 +95,7 @@ class GetWeatherData():
     def conditions(self):
         conditions = self.data['data']['current']['weather']['ic']
         conditions_text = weather_status[conditions]
-        return (conditions, conditions_text)
+        return conditions, conditions_text
 
 
 
