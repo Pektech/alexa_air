@@ -1,5 +1,6 @@
 # for parsing the weather/pollution report
 import requests
+from geopy.geocoders import Nominatim
 
 weather_status = {'01d': 'sunny', '01n': 'a clear night',
                   '02d': 'a few light clouds', '02n': 'a few nighttime clouds',
@@ -20,6 +21,13 @@ def wind_direction(wind):
             "South West", "West", "North West"]
     ix = int((wind + 22.5) / 45)
     return dirs[ix % 8]
+
+
+
+def get_coordinates(location):
+    geolocator = Nominatim(user_agent='alexa_air')
+    coordinates = geolocator.geocode(location)
+    return (coordinates.latitude, coordinates.longitude)
 
 
 
@@ -88,7 +96,7 @@ class GetWeatherData():
 
     @property
     def wind_dir(self):
-        ''' wind direction given as degress, converted to cardinal points'''
+        ''' wind direction given as degrees, converted to cardinal points'''
         wind_dir = self.data['data']['current']['weather']['wd']
         wind_dir = wind_direction(wind_dir)
         return wind_dir
@@ -101,5 +109,26 @@ class GetWeatherData():
 
 
 
+    @property
+    def status(self):
+        status = self.data['status']
+        if status == 'error' or status == 'fail':
+            status = (self.data['status'], self.data['data']['message'])
+            return status
+        else:
+            return (status, 'ok')
 
 
+
+
+
+class GetZipWeather(GetWeatherData):
+    def __init__(self, zipcode):
+        super().__init__(city=None, state=None)
+        self.zipcode = zipcode
+        self._base_url = 'http://api.airvisual.com/v2/nearest_city'
+        coordinates = get_coordinates(self.zipcode)
+        self._params = {'lat': coordinates[0], 'lon': coordinates[1],
+                        "key": "YEa4b9c2pNdCTZpNp"}
+        self.data = requests.request("GET", self._base_url,
+                                     params=self._params).json()

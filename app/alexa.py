@@ -2,17 +2,17 @@ from app import ask
 from flask_ask import statement, question
 from flask_ask import session as ask_session, request as ask_request, context
 import requests
-from .weather import GetWeatherData
+from .weather import GetWeatherData, GetZipWeather, get_coordinates
 
 from geopy.geocoders import Nominatim
 
 permissions = ["read::alexa:device:all:address:country_and_postal_code"]
 
 
-def get_coordinates(location):
-    geolocator = Nominatim(user_agent='alexa_air')
-    coordinates = geolocator.geocode(location)
-    return (coordinates.latitude, coordinates.longitude)
+# def get_coordinates(location):
+#     geolocator = Nominatim(user_agent='alexa_air')
+#     coordinates = geolocator.geocode(location)
+#     return (coordinates.latitude, coordinates.longitude)
 
 
 def get_alexa_location(deviceId, accessToken):
@@ -63,6 +63,16 @@ def home():
 @ask.intent('CityAir')
 def city_air(city, state):
     data = GetWeatherData(city, state)
+    status = data.status
+    print(status, data.info)
+    if status[0] != 'success':
+        if status[1] == 'city_not_found':
+            return question("I'm sorry I could not find that city. You can repeat the "
+                        "name and state or if you say zipcode and "
+                        "the number I can find the nearest report" )
+        else:
+            return statement("I'm sorry the service is noy available at this time."
+                         "Please try later. Good Bye")
     print(data.info)
     forecast = 'Current weather conditions are ' + data.conditions[1] + \
                     '. Wind is blowing  ' + data.wind_dir + ' with a speed of '\
@@ -90,3 +100,49 @@ def city_air(city, state):
         image='https://737b52e8.ngrok.io/static/images/{}.png'
         .format(data.conditions[0]))
 
+
+
+@ask.intent('ZipAir')
+def zipweather(zip):
+    print(zip)
+    data=GetZipWeather(zip)
+    status = data.status
+    print(status, data.info)
+    if status[0] != 'success':
+        if status[1] == 'city_not_found':
+            return question(
+                "I'm sorry I could not find that city. You can repeat the "
+                "name and state or if you say zipcode and "
+                "the number I can find the nearest report")
+        else:
+            return statement("I'm sorry the service is noy available at this time."
+                         "Please try later. Good Bye")
+    print(data.info)
+    forecast = 'Current weather conditions are ' + data.conditions[1] + \
+               '. Wind is blowing  ' + data.wind_dir + ' with a speed of ' \
+               + data.wind_speed + " miles per second. the temperature " \
+                                   "is " + data.temp \
+               + ' with humidity at ' + data.humidity + '. Air quality ' \
+                                                        'index is ' \
+               + data.aqi[0] + ' which is ' + data.aqi[2]
+
+    display = context.System.device.supportedInterfaces.Display
+    print(display)
+    print('Air Quality {}'.format(data.aqi[2]))
+    response = 'Weather is {}, Temp = {}'.format(data.conditions[1], data.temp)
+    textContent = {'primaryText': {'type': 'RichText', 'text': response}}
+    if display == None:
+        return statement(forecast) \
+            .standard_card(title='{}'.format(data.conditions[1]),
+                           text='Air Quality  {}, Temp = {}'.format(
+                               data.aqi[2], data.temp)
+                           ,
+                           small_image_url='https://737b52e8.ngrok.io/static'
+                                           '/images/{}.png'
+                           .format(data.conditions[0]))
+    else:
+        return statement(forecast).display_render(template='BodyTemplate2',
+        title='Air Quality {}'.format(data.aqi[2]),
+        text=textContent,
+        image='https://737b52e8.ngrok.io/static/images/{}.png'
+        .format(data.conditions[0]))
