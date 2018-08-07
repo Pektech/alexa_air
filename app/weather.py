@@ -74,7 +74,9 @@ class GetWeatherData():
 
     @property
     def temp(self):
-        return str(self.data['data']['current']['weather']['tp'])
+        temp = self.data['data']['current']['weather']['tp']
+        temp = 9.0/5.0 * temp +32
+        return str(round(temp))
 
     @property
     def humidity(self):
