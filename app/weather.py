@@ -4,9 +4,14 @@ from geopy.geocoders import Nominatim
 
 weather_status = {'01d': 'sunny', '01n': 'a clear night',
                   '02d': 'a few light clouds', '02n': 'a few nighttime clouds',
-                  '03d': 'scattered clouds', '04d': 'over cast with broken clouds',
-                  '09d': 'rain showers', '10d': 'rain', '10n': 'rain',
-                  '11d': 'thunder storms', '13d': 'snow', '50d':'fog'}
+                  '03d': 'scattered clouds', '03n' : 'scattered clouds',
+                  '04d': 'over cast with broken clouds',
+                  '04n': 'over cast with broken clouds',
+                  '09d': 'rain showers', '09n' : 'rain showers',
+                  '10d': 'rain', '10n': 'rain',
+                  '11d': 'thunder storms', '11n' : 'thunder storms',
+                  '13d': 'snow', '13n' : 'snow',
+                  '50d':'fog', '50n': 'fog'}
 
 air_status = {'green': 'Good','yellow': 'Moderate',
                'orange': 'Unhealthy for Sensative Groups', 'red': 'unhealthy',
