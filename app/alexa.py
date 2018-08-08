@@ -115,7 +115,7 @@ def zipweather(zip):
                + data.aqi[0] + ' which is ' + data.aqi[2]
 
     display = context.System.device.supportedInterfaces.Display
-    response = 'Weather is {}, Temp = {}'.format(data.conditions[1], data.temp)
+    response = 'Weather : {}, Temp = {}'.format(data.conditions[1], data.temp)
     textContent = {'primaryText': {'type': 'RichText', 'text': response}}
     if display == None:
         return statement(forecast) \
