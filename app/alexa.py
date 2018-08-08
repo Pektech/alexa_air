@@ -77,19 +77,19 @@ def city_air(city, state):
         return statement(forecast) \
             .standard_card(title='{}'.format(data.conditions[1]),
                            text='Air Quality  {}, Temp = {}'.format(
-                               data.aqi[2], data.temp)
-                           ,
-                           small_image_url='https://737b52e8.ngrok.io/static'
-                                           '/images/{}.png'
+                               data.aqi[2], data.temp),
+                           small_image_url='https://1jfmx0noqg.execute-api'
+                                           '.us-east-1.amazonaws.com/dev/static/images{}.png'
                            .format(data.conditions[0]))
     else:
-        return statement(forecast)\
+        return statement(forecast) \
             .display_render(template='BodyTemplate2',
                             title='Air Quality {}'.
                             format(data.aqi[2]),
                             text=textContent,
-                            image='https://737b52e8.ngrok.io/static/images/{}.png'
-                             .format(data.conditions[0]))
+                            image='https://1jfmx0noqg.execute-api.us-east-1'
+                                  '.amazonaws.com/dev/static/images/{}.png'
+                            .format(data.conditions[0]))
 
 
 @ask.intent('ZipAir', )
@@ -123,7 +123,8 @@ def zipweather(zip):
                            text='Air Quality  {}, Temp = {}'.format(
                                data.aqi[2], data.temp)
                            ,
-                           small_image_url='https://737b52e8.ngrok.io/static'
+                           small_image_url='https://1jfmx0noqg.execute-api'
+                                           '.us-east-1.amazonaws.com/dev/static'
                                            '/images/{}.png'
                            .format(data.conditions[0]))
     else:
@@ -132,8 +133,9 @@ def zipweather(zip):
             template='BodyTemplate2',
             title='Air Quality {}'.format(data.aqi[2]),
             text=textContent,
-            image='https://737b52e8.ngrok.io/static/images/{}.png'
-            .format(data.conditions[0]))
+            image='https://1jfmx0noqg.execute-api.us-east-1.amazonaws.com'
+                  '/dev/static/images/{}.png'
+                .format(data.conditions[0]))
 
 
 @ask.intent('AMAZON.CancelIntent')
@@ -142,10 +144,12 @@ def zipweather(zip):
 def goodbye():
     return statement('Good bye')
 
+
 @ask.intent('AMAZON.HelpIntent')
 def help():
     return question('I can provide a weather report. Say location for here, '
                     'a zipcode or tell me a city name and its State')
+
 
 @ask.intent('AMAZON.PreviousIntent')
 @ask.intent('AMAZON.NextIntent')
@@ -159,12 +163,13 @@ def yes():
     return question('Say location for here, '
                     'a zipcode or tell me a city name and its State')
 
+
 @ask.intent('AMAZON.RepeatIntent')
 def repeat():
     repeat_speech = ask_session.attributes['last_speech']
     return question(repeat_speech)
 
+
 @ask.intent('AMAZON.FallbackIntent')
 def fallback():
     return question('Sorry I only provide air status. Would you like one?')
-

@@ -2,7 +2,7 @@
 import requests
 
 
-
+'https://1jfmx0noqg.execute-api.us-east-1.amazonaws.com/dev'
 def get_info():
     url = "http://api.airvisual.com/v2/city"
 
