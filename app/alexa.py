@@ -22,7 +22,7 @@ def get_alexa_location(deviceId, accessToken):
 
 @ask.launch
 def start_skill():
-    welcome_message = 'Welcome would you like the air status & weather for ' \
+    welcome_message = 'Welcome. Would you like the air status & weather for ' \
                       'your location or for a specific city?'
     reprompt_text = 'Say home or the name of a city & State and I will tell ' \
                     'you the ' \
@@ -49,22 +49,29 @@ def here():
 
 
 @ask.intent('CityAir')
-def city_air(city, state):
+def city_air(city, state=None):
     data = GetWeatherData(city, state)
     status = data.status
     if status[0] != 'success':
-        if status[1] == 'city_not_found':
+        if status[0] == 'fail' and status[1] == 'city_not_found':
             return question(
                 "I'm sorry I could not find that city. You can repeat the "
                 "name and state or if you say zipcode and "
-                "the number I can find the nearest report")
+                "the number,  I can find the nearest city. "
+                "Would you like to try again?")
+
+        elif status[0]=='fail' and status[1]== 'arguments_missing':
+            return question('Sorry I need both the city and state to provide'
+                        ' accurate information. Would you like to try again?')
+
+
         else:
             return statement(
-                "I'm sorry the service is noy available at this time."
-                "Please try later. Good Bye")
+                "I'm sorry the service is not available at this time."
+                " Please try later. Good Bye")
     forecast = 'Current weather conditions are ' + data.conditions[1] + \
                '. Wind is blowing  ' + data.wind_dir + ' with a speed of ' \
-               + data.wind_speed + " miles per second. the temperature " \
+               + data.wind_speed + " miles per second. The temperature " \
                                    "is " + data.temp \
                + ' with humidity at ' + data.humidity + '. Air quality ' \
                                                         'index is ' \
@@ -92,8 +99,11 @@ def city_air(city, state):
                             .format(data.conditions[0]))
 
 
-@ask.intent('ZipAir', )
+@ask.intent('ZipAir')
 def zipweather(zip):
+    zip = str(zip)
+    if zip.isnumeric() == False:
+        return question('Sorry I need a five digit zipcode, would you like to try again?')
     data = GetZipWeather(zip)
     status = data.status
     if status[0] != 'success':
@@ -101,14 +111,15 @@ def zipweather(zip):
             return question(
                 "I'm sorry I could not find that city. You can repeat the "
                 "name and state or if you say zipcode and "
-                "the number I can find the nearest report")
+                "the number,  I can find the nearest report.  "
+                "Would you like to try again")
         else:
             return statement(
-                "I'm sorry the service is noy available at this time."
-                "Please try later. Good Bye")
+                "I'm sorry the service is not available at this time."
+                " Please try later. Good Bye")
     forecast = 'Current weather conditions are ' + data.conditions[1] + \
                '. Wind is blowing  ' + data.wind_dir + ' with a speed of ' \
-               + data.wind_speed + " miles per second. the temperature " \
+               + data.wind_speed + " miles per second. The temperature " \
                                    "is " + data.temp \
                + ' with humidity at ' + data.humidity + '. Air quality ' \
                                                         'index is ' \
@@ -148,7 +159,7 @@ def goodbye():
 @ask.intent('AMAZON.HelpIntent')
 def help():
     return question('I can provide a weather report. Say location for here, '
-                    'a zipcode or tell me a city name and its State')
+                    ' a zipcode or tell me a city name and its State')
 
 
 @ask.intent('AMAZON.PreviousIntent')
