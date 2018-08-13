@@ -100,11 +100,20 @@ def city_air(city, state=None):
 
 
 @ask.intent('ZipAir')
-def zipweather(zip):
-    zip = str(zip)
-    if zip.isnumeric() == False:
+def zipweather(zipId=None):
+    if 'zipId' in ask_request.intent['slots']:
+        if 'value' in ask_request.intent['slots']['zipId']:
+            zipId = ask_request.intent['slots']['zipId']['value']
+        else:
+            zipId = None
+    else:
+        zipId = None
+
+
+    zipId = str(zipId)
+    if zipId == None or zipId.isnumeric() == False:
         return question('Sorry I need a five digit zipcode, would you like to try again?')
-    data = GetZipWeather(zip)
+    data = GetZipWeather(zipId)
     status = data.status
     if status[0] != 'success':
         if status[1] == 'city_not_found':
@@ -183,4 +192,4 @@ def repeat():
 
 @ask.intent('AMAZON.FallbackIntent')
 def fallback():
-    return question('Sorry I only provide air status. Would you like one?')
+    return question('Sorry I need more information. Please tell me a city & state or a five digit zipcode')

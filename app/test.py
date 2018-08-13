@@ -9,8 +9,9 @@ def get_info():
     querystring = {'city':'Springfield','country':'USA', "key":"YEa4b9c2pNdCTZpNp"}
 
     response = requests.request("GET", url, params=querystring)
-
-    print(response.text)
+    # status = response.json()['status']
+    # print(status)
+    return response.text
 
 
 response = {'status': 'success',
@@ -31,8 +32,9 @@ def get_latlong(zip):
                    'app_code' : 'BI_N766MeUmLIgK3QYh93A', 'searchtext': zip,
                    'locationattributes': 'none,mapView'}
     feed = requests.request('GET', url, params=querystring)
+    loc = feed.json()
     return feed.json()
 
 
-test["Response"]['View'][0]['Result'][0]['Location']['DisplayPosition']
-{'Latitude': 43.10176, 'Longitude': -73.5828}
+#test["Response"]['View'][0]['Result'][0]['Location']['DisplayPosition']
+#{'Latitude': 43.10176, 'Longitude': -73.5828}

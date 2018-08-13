@@ -4,6 +4,11 @@ from flask_ask import Ask
 app = Flask(__name__)
 ask = Ask(app, '/')
 
+import logging
+
+logging.getLogger('flask_ask').setLevel(logging.DEBUG)
+
+
 from app import alexa
 
 @app.route('/pek')
