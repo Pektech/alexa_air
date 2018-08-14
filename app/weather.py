@@ -109,7 +109,7 @@ class GetWeatherData():
 
 
 class GetZipWeather(GetWeatherData):
-    '''subclass for zipcodes'''
+    '''subclass for zip codes'''
     def __init__(self, zipcode):
         super().__init__(city=None, state=None)
         self.zipcode = zipcode

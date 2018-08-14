@@ -41,7 +41,7 @@ def here():
         zipweatherdata = zipweather(location)
         return zipweatherdata
     elif check_permission == 'error':
-        return statement("I need your permission to access your zipcode."
+        return statement("I need your permission to access your zip code."
                          " Please enable Location permissions in "
                          "the Alexa app"). \
             consent_card(
@@ -56,7 +56,7 @@ def city_air(city, state=None):
         if status[0] == 'fail' and status[1] == 'city_not_found':
             return question(
                 "I'm sorry I could not find that city. You can repeat the "
-                "name and state or if you say zipcode and "
+                "name and state or if you say zip code and "
                 "the number,  I can find the nearest city. "
                 "Would you like to try again?")
 
@@ -100,26 +100,27 @@ def city_air(city, state=None):
 
 
 @ask.intent('ZipAir')
-def zipweather(zipId=None):
-    if 'zipId' in ask_request.intent['slots']:
-        if 'value' in ask_request.intent['slots']['zipId']:
-            zipId = ask_request.intent['slots']['zipId']['value']
+def zipweather(zipid=None):
+    if 'zipid' in ask_request.intent['slots']:
+        if 'value' in ask_request.intent['slots']['zipid']:
+            zipid = ask_request.intent['slots']['zipid']['value']
         else:
-            zipId = None
+            zipid = None
     else:
-        zipId = None
+        zipid = None
 
 
-    zipId = str(zipId)
-    if zipId == None or zipId.isnumeric() == False:
-        return question('Sorry I need a five digit zipcode, would you like to try again?')
-    data = GetZipWeather(zipId)
+    zipid = str(zipid)
+    if zipid is None or zipid.isnumeric() is False or len(zipid) != 5:
+        return question('Sorry I need a five digit zip code, '
+                        'would you like to try again?')
+    data = GetZipWeather(zipid)
     status = data.status
     if status[0] != 'success':
         if status[1] == 'city_not_found':
             return question(
                 "I'm sorry I could not find that city. You can repeat the "
-                "name and state or if you say zipcode and "
+                "name and state or if you say zip code and "
                 "the number,  I can find the nearest report.  "
                 "Would you like to try again")
         else:
@@ -168,7 +169,7 @@ def goodbye():
 @ask.intent('AMAZON.HelpIntent')
 def help():
     return question('I can provide a weather report. Say location for here, '
-                    ' a zipcode or tell me a city name and its State')
+                    ' a zip code or tell me a city name and its State')
 
 
 @ask.intent('AMAZON.PreviousIntent')
@@ -181,7 +182,7 @@ def misc():
 @ask.intent('AMAZON.YesIntent')
 def yes():
     return question('Say location for here, '
-                    'a zipcode or tell me a city name and its State')
+                    'a zip code or tell me a city name and its State')
 
 
 @ask.intent('AMAZON.RepeatIntent')
@@ -192,4 +193,5 @@ def repeat():
 
 @ask.intent('AMAZON.FallbackIntent')
 def fallback():
-    return question('Sorry I need more information. Please tell me a city & state or a five digit zipcode')
+    return question('Sorry I need more information. '
+                    'Please tell me a city & state or a five digit zip code')
