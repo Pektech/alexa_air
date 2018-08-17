@@ -3,6 +3,8 @@
 Alexa Skill that gives a simple weather and air quality report based on location, city/state or zip code. 
 * [Flask](https://github.com/pallets/flask) 
 * [Flask-Ask](https://github.com/johnwheeler/flask-ask)
+* [Zappa](https://github.com/Miserlou/Zappa)  makes deploying the skill so easy
+* [Ngork](https://ngrok.com/) makes local testing a breeze
 * Weather Api from [AirVisual](https://www.airvisual.com)
       
 
