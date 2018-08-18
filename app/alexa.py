@@ -36,8 +36,10 @@ def here():
     deviceID = context.System.device['deviceId']
     accessToken = context.System['apiAccessToken']
     check_permission = get_alexa_location(deviceID, accessToken)
+    print(check_permission)
     if check_permission[0] == 'success':
         location = check_permission[1]['postalCode']
+        print("location: ", location)
         zipweatherdata = zipweather(location)
         return zipweatherdata
     elif check_permission == 'error':
@@ -101,13 +103,14 @@ def city_air(city, state=None):
 
 @ask.intent('ZipAir')
 def zipweather(zipid=None):
-    if 'zipid' in ask_request.intent['slots']:
-        if 'value' in ask_request.intent['slots']['zipid']:
-            zipid = ask_request.intent['slots']['zipid']['value']
+    if zipid == None:
+        if 'zipid' in ask_request.intent['slots']:
+            if 'value' in ask_request.intent['slots']['zipid']:
+                zipid = ask_request.intent['slots']['zipid']['value']
+            else:
+                zipid = None
         else:
             zipid = None
-    else:
-        zipid = None
 
 
     zipid = str(zipid)
